@@ -6,9 +6,7 @@ import moment from "moment";
 import React, { useEffect, useState } from "react";
 
 const Temperature = () => {
-  // @ts-ignore
   const { forecast } = useGlobalContext();
-  console.log(forecast);
 
   if (!forecast) return <div>Loading...</div>;
 

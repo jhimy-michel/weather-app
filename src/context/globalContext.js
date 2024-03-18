@@ -1,5 +1,6 @@
 "use client";
-import { GET } from "@/api/weather/route";
+import { GET as getWeather } from "../app/api/weather/route";
+import { GET as getAirPollution } from "../app/api/pollution/route";
 import axios from "axios";
 import React, { useEffect } from "react";
 import { useState } from "react";
@@ -10,13 +11,21 @@ const GlobalContextUpdate = React.createContext();
 
 export const GlobalContextProvider = ({ children }) => {
   const [forecast, setForecast] = useState();
-  // console.log(forecast)
+  const [airQuality, setAirQuality] = useState({});
 
   const fetchForecast = async () => {
     try {
-      const response = await GET();
-      console.log(response);
+      const response = await getWeather();
       setForecast(response);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const fetchAirQuality = async () => {
+    try {
+      const res = await getAirPollution();
+      setAirQuality(res);
     } catch (e) {
       console.log(e);
     }
@@ -24,9 +33,10 @@ export const GlobalContextProvider = ({ children }) => {
 
   useEffect(() => {
     fetchForecast();
+    fetchAirQuality();
   }, []);
   return (
-    <GlobalContext.Provider value={{ forecast }}>
+    <GlobalContext.Provider value={{ forecast, airQuality }}>
       <GlobalContextUpdate.Provider>{children}</GlobalContextUpdate.Provider>
     </GlobalContext.Provider>
   );

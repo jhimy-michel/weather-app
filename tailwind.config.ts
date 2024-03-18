@@ -10,6 +10,8 @@ const config = {
       padding: "2rem",
       screens: {
         "2xl": "1400px",
+        "sm-2": "581px",
+        "md-2": "1100px",
       },
     },
     extend: {
@@ -20,6 +22,7 @@ const config = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         "dark-grey": "#0A0A0A",
+
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
