@@ -5,10 +5,16 @@ export async function GET(req: Request) {
     const apiKey = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
     const lat = 40.4165;
     const lon = -3.7026;
-    const url = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apiKey}`;
 
-    const res = await axios.get(url);
-    return res.data;
+    const dailyUrl = `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+
+    const dailyRes = await fetch(dailyUrl, {
+      next: { revalidate: 3600 },
+    });
+
+    const dailyData = await dailyRes.json();
+    
+    return dailyData;
   } catch (e) {
     console.log(e);
     //console.log("Error fetching forecast data");
