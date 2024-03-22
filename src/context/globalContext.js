@@ -64,7 +64,13 @@ export const GlobalContextProvider = ({ children }) => {
 
   return (
     <GlobalContext.Provider value={{ forecast, airQuality, fiveDayForecast, uvIndex }}>
-      <GlobalContextUpdate.Provider>{children}</GlobalContextUpdate.Provider>
+      <GlobalContextUpdate.Provider
+        value={{
+          setActiveCityCoords,
+        }}
+      >
+        {children}
+      </GlobalContextUpdate.Provider>
     </GlobalContext.Provider>
   );
 };
