@@ -9,7 +9,6 @@ import { Progress } from "../ui/progress";
 
 const AirPollution = () => {
   const { airQuality } = useGlobalContext();
-  console.log(airQuality);
 
   if (!airQuality || !airQuality.list || !airQuality.list[0] || !airQuality.list[0].main) {
     return <Skeleton className="h-[12rem] w-full col-span-2 md:col-span-2" />;
