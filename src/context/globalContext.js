@@ -17,7 +17,7 @@ export const GlobalContextProvider = ({ children }) => {
   const [fiveDayForecast, setFiveDayForecast] = useState({});
   const [uvIndex, setUvIndex] = useState({});
 
-  const [activeCityCoords, setActiveCityCoords] = useState([51.752021, -1.257726]);
+  const [activeCityCoords, setActiveCityCoords] = useState([40.7128, -74.006]);
 
   const fetchForecast = async () => {
     try {
@@ -40,6 +40,7 @@ export const GlobalContextProvider = ({ children }) => {
   const fetchFiveDaysForecast = async () => {
     try {
       const res = await getFiveDaysForecast();
+      console.log(res)
       setFiveDayForecast(res);
     } catch (e) {
       console.log(e);
