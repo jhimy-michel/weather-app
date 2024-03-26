@@ -1,10 +1,8 @@
 import axios from "axios";
 
-export async function GET(req: Request) {
+export async function GET(lat: any, lon: any) {
   try {
     const apiKey = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
-    const lat = 40.7128;
-    const lon = -74.006;
 
     const dailyUrl = `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`;
 

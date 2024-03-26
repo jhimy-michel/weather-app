@@ -4,9 +4,10 @@ import { GET as getAirPollution } from "../app/api/pollution/route";
 import { GET as getFiveDaysForecast } from "../app/api/fivehourday/route";
 import { GET as getUvIndex } from "../app/api/uv/route";
 import axios from "axios";
-import React, { useEffect } from "react";
-import { useState } from "react";
-import { useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import defaultStates from "@/utils/defaultStates";
+
+import { debounce } from "lodash";
 
 const GlobalContext = React.createContext();
 const GlobalContextUpdate = React.createContext();
@@ -17,30 +18,31 @@ export const GlobalContextProvider = ({ children }) => {
   const [fiveDayForecast, setFiveDayForecast] = useState({});
   const [uvIndex, setUvIndex] = useState({});
 
-  const [activeCityCoords, setActiveCityCoords] = useState([40.7128, -74.006]);
+  const [activeCityCoords, setActiveCityCoords] = useState([47.3769, 8.5417]);
+  const [geoCodedList, setGeoCodedList] = useState(defaultStates);
+  const [inputValue, setInputValue] = useState("");
 
-  const fetchForecast = async () => {
+  const fetchForecast = async (lat, lon) => {
     try {
-      const response = await getWeather();
+      const response = await getWeather(lat, lon);
       setForecast(response);
     } catch (e) {
       console.log(e);
     }
   };
 
-  const fetchAirQuality = async () => {
+  const fetchAirQuality = async (lat, lon) => {
     try {
-      const res = await getAirPollution();
+      const res = await getAirPollution(lat, lon);
       setAirQuality(res);
     } catch (e) {
       console.log(e);
     }
   };
 
-  const fetchFiveDaysForecast = async () => {
+  const fetchFiveDaysForecast = async (lat, lon) => {
     try {
-      const res = await getFiveDaysForecast();
-      console.log(res)
+      const res = await getFiveDaysForecast(lat, lon);
       setFiveDayForecast(res);
     } catch (e) {
       console.log(e);
@@ -56,15 +58,60 @@ export const GlobalContextProvider = ({ children }) => {
     }
   };
 
+  // handle input
+  const handleInput = (e) => {
+    setInputValue(e.target.value);
+
+    if (e.target.value === "") {
+      setGeoCodedList(defaultStates);
+    }
+  };
+
+  // geocoded list
+  const fetchGeoCodedList = async (search) => {
+    try {
+      const res = await axios.get(`/api/geocoded?search=${search}`);
+
+      setGeoCodedList(res.data);
+    } catch (error) {
+      console.log("Error fetching geocoded list: ", error.message);
+    }
+  };
+
+  // debounce function
   useEffect(() => {
-    fetchForecast();
-    fetchAirQuality();
-    fetchFiveDaysForecast();
-    fetchUvData(activeCityCoords[0], activeCityCoords[1]);
+    const debouncedFetch = debounce((search) => {
+      fetchGeoCodedList(search);
+    }, 500);
+
+    if (inputValue) {
+      debouncedFetch(inputValue);
+    }
+
+    // cleanup
+    return () => debouncedFetch.cancel();
+  }, [inputValue]);
+
+  useEffect(() => {
+   fetchForecast(activeCityCoords[0], activeCityCoords[1]);
+   fetchAirQuality(activeCityCoords[0], activeCityCoords[1]);
+   fetchFiveDaysForecast(activeCityCoords[0], activeCityCoords[1]);
+   fetchUvData(activeCityCoords[0], activeCityCoords[1]);
   }, [activeCityCoords]);
 
   return (
-    <GlobalContext.Provider value={{ forecast, airQuality, fiveDayForecast, uvIndex }}>
+    <GlobalContext.Provider
+      value={{
+        forecast,
+        airQuality,
+        fiveDayForecast,
+        uvIndex,
+        geoCodedList,
+        inputValue,
+        handleInput,
+        setActiveCityCoords,
+      }}
+    >
       <GlobalContextUpdate.Provider
         value={{
           setActiveCityCoords,
