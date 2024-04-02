@@ -4,7 +4,6 @@ import DailyForecast from "@/components/DailyForecast/DailyForecast";
 import FeelsLike from "@/components/FeelsLike/FeelsLike";
 import FiveDayForecast from "@/components/FiveDayForecast/FiveDayForecast";
 import Humidity from "@/components/Humidity/Humidity";
-import Mapbox from "@/components/Mapbox/Mapbox";
 import Navbar from "@/components/Navbar";
 import Population from "@/components/Population/Population";
 import Pressure from "@/components/Pressure/Pressure";
@@ -15,6 +14,7 @@ import Visibility from "@/components/Visibility/Visibility";
 import Wind from "@/components/Wind/Wind";
 import { useGlobalContextUpdate } from "@/context/globalContext";
 import defaultStates from "@/utils/defaultStates";
+
 import dynamic from "next/dynamic";
 
 const Map = dynamic(() => import("@/components/Mapbox/Mapbox"), {

@@ -3,7 +3,7 @@ import { GET as getWeather } from "../app/api/weather/route";
 import { GET as getAirPollution } from "../app/api/pollution/route";
 import { GET as getFiveDaysForecast } from "../app/api/fivehourday/route";
 import { GET as getUvIndex } from "../app/api/uv/route";
-import axios from "axios";
+import { GET as getGeocoded } from "../app/api/geocoded/route";
 import React, { useEffect, useState, useContext } from "react";
 import defaultStates from "@/utils/defaultStates";
 
@@ -69,10 +69,12 @@ export const GlobalContextProvider = ({ children }) => {
 
   // geocoded list
   const fetchGeoCodedList = async (search) => {
+    // console.log(search);
     try {
-      const res = await axios.get(`/api/geocoded?search=${search}`);
+      const res = await getGeocoded(search);
 
-      setGeoCodedList(res.data);
+      // console.log(res);
+      setGeoCodedList(res);
     } catch (error) {
       console.log("Error fetching geocoded list: ", error.message);
     }
@@ -82,7 +84,7 @@ export const GlobalContextProvider = ({ children }) => {
   useEffect(() => {
     const debouncedFetch = debounce((search) => {
       fetchGeoCodedList(search);
-    }, 500);
+    }, 1000);
 
     if (inputValue) {
       debouncedFetch(inputValue);
@@ -93,10 +95,10 @@ export const GlobalContextProvider = ({ children }) => {
   }, [inputValue]);
 
   useEffect(() => {
-   fetchForecast(activeCityCoords[0], activeCityCoords[1]);
-   fetchAirQuality(activeCityCoords[0], activeCityCoords[1]);
-   fetchFiveDaysForecast(activeCityCoords[0], activeCityCoords[1]);
-   fetchUvData(activeCityCoords[0], activeCityCoords[1]);
+    fetchForecast(activeCityCoords[0], activeCityCoords[1]);
+    fetchAirQuality(activeCityCoords[0], activeCityCoords[1]);
+    fetchFiveDaysForecast(activeCityCoords[0], activeCityCoords[1]);
+    fetchUvData(activeCityCoords[0], activeCityCoords[1]);
   }, [activeCityCoords]);
 
   return (
