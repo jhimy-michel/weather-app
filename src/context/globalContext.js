@@ -1,13 +1,9 @@
 "use client";
-import { GET as getWeather } from "../app/api/weather/route";
-import { GET as getAirPollution } from "../app/api/pollution/route";
-import { GET as getFiveDaysForecast } from "../app/api/fivehourday/route";
-import { GET as getUvIndex } from "../app/api/uv/route";
-import { GET as getGeocoded } from "../app/api/geocoded/route";
 import React, { useEffect, useState, useContext } from "react";
 import defaultStates from "@/utils/defaultStates";
 
 import { debounce } from "lodash";
+import axios from "axios";
 
 const GlobalContext = React.createContext();
 const GlobalContextUpdate = React.createContext();
@@ -24,8 +20,9 @@ export const GlobalContextProvider = ({ children }) => {
 
   const fetchForecast = async (lat, lon) => {
     try {
-      const response = await getWeather(lat, lon);
-      setForecast(response);
+      const res = await axios.get(`api/weather?lat=${lat}&lon=${lon}`);
+
+      setForecast(res.data);
     } catch (e) {
       console.log(e);
     }
@@ -33,8 +30,9 @@ export const GlobalContextProvider = ({ children }) => {
 
   const fetchAirQuality = async (lat, lon) => {
     try {
-      const res = await getAirPollution(lat, lon);
-      setAirQuality(res);
+      const res = await axios.get(`api/pollution?lat=${lat}&lon=${lon}`);
+
+      setAirQuality(res.data);
     } catch (e) {
       console.log(e);
     }
@@ -42,17 +40,19 @@ export const GlobalContextProvider = ({ children }) => {
 
   const fetchFiveDaysForecast = async (lat, lon) => {
     try {
-      const res = await getFiveDaysForecast(lat, lon);
-      setFiveDayForecast(res);
-    } catch (e) {
-      console.log(e);
+      const res = await axios.get(`api/fivehourday?lat=${lat}&lon=${lon}`);
+
+      setFiveDayForecast(res.data);
+    } catch (error) {
+      console.log("Error fetching five day forecast data: ", error.message);
     }
   };
 
   const fetchUvData = async (lat, lon) => {
     try {
-      const res = await getUvIndex(lat, lon);
-      setUvIndex(res);
+      const res = await axios.get(`/api/uv?lat=${lat}&lon=${lon}`);
+
+      setUvIndex(res.data);
     } catch (e) {
       console.log(e);
     }
@@ -69,12 +69,10 @@ export const GlobalContextProvider = ({ children }) => {
 
   // geocoded list
   const fetchGeoCodedList = async (search) => {
-    // console.log(search);
     try {
-      const res = await getGeocoded(search);
+      const res = await axios.get(`/api/geocoded?search=${search}`);
 
-      // console.log(res);
-      setGeoCodedList(res);
+      setGeoCodedList(res.data);
     } catch (error) {
       console.log("Error fetching geocoded list: ", error.message);
     }
@@ -84,7 +82,7 @@ export const GlobalContextProvider = ({ children }) => {
   useEffect(() => {
     const debouncedFetch = debounce((search) => {
       fetchGeoCodedList(search);
-    }, 1000);
+    }, 500);
 
     if (inputValue) {
       debouncedFetch(inputValue);

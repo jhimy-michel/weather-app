@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { wind } from "@/utils/icons";
 import Image from "next/image";
 import React from "react";
@@ -46,6 +46,6 @@ function Wind() {
       </div>
     </div>
   );
-};
+}
 
 export default Wind;

@@ -11,6 +11,7 @@ const Temperature = () => {
   if (!forecast) return <div>Loading...</div>;
 
   const { main, weather, timezone, name } = forecast;
+  console.log(forecast)
   const temp = kelvinToCelsius(main.temp);
   const tempMax = kelvinToCelsius(main.temp_min);
   const tempMin = kelvinToCelsius(main.temp_max);
@@ -57,7 +58,7 @@ const Temperature = () => {
       setLocalTime(formatedTime);
       setCurrentDay(day);
     }, 1000);
-  }, []);
+  }, [timezone]);
 
   return (
     <div className="pt-6 pb-5 px-4 border rounded-lg flex flex-col justify-between dark:bg-dark-grey shadow-sm dark:shadow-none">
