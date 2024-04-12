@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
   const lat = searchParams.get("lat");
   const lon = searchParams.get("lon");
   try {
-    const apiKey = process.env.PUBLIC_WEATHER_API_KEY;
+    const apiKey = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
 
     const dailyUrl = `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`;
 

@@ -18,6 +18,6 @@ export async function GET(req: NextRequest) {
   } catch (e) {
     console.log(e);
     //console.log("Error fetching forecast data");
-    return new Response((e as any)?.message, { status: 500 });
+    return new Response("Error fetching forecast data", { status: 500 });
   }
 }
